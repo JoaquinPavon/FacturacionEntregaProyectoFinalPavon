@@ -1,4 +1,7 @@
-Cliente: 
+Cliente
+
+
+ POST http://localhost:8080/clientes/alta
 
 {
   "nombre": "Juan 2",
@@ -7,7 +10,23 @@ Cliente:
 }
 
 
+PUT - http://localhost:8080/clientes/modificar/id
+GET ALL - http://localhost:8080/clientes 
+GET ID - http://localhost:8080/clientes/id
+DELETE - http://localhost:8080/clientes/baja/id
+DELETE ALL -http://localhost:8080/clientes/borrarTodos
+
+
+
+
+
+
+
+
 PRODUCTO:
+
+
+ POST http://localhost:8080/productos/alta
 
  {
       "nombre": "Producto B",
@@ -27,8 +46,24 @@ PRODUCTO:
       "stock": 53
     }
    
+PUT - http://localhost:8080/productos/modificar/id
+GET ALL - http://localhost:8080/productos
+GET ID - http://localhost:8080/productos/id
+DELETE - http://localhost:8080/productos/baja/id
+DELETE ALL - http://localhost:8080/productos/borrarTodos
 
-FACTURA:
+
+
+
+FACTURA: 
+
+
+POST http://localhost:8080/facturas/alta
+PUT - http://localhost:8080/facturas/modificar/id
+GET ALL - http://localhost:8080/facturas
+GET ID - http://localhost:8080/facturas/alta/id
+DELETE -http://localhost:8080/facturas/baja/id
+DELETE ALL - http://localhost:8080/facturas/borrarTodos
 
 {
     "cliente": {
@@ -54,7 +89,7 @@ FACTURA:
 
 
 
-Agregar Linea a Factura: 
+Agregar Linea a Factura: PUT http://localhost:8080/facturas/add/{id}
 
         {
             "descripcion": "Descripcion",

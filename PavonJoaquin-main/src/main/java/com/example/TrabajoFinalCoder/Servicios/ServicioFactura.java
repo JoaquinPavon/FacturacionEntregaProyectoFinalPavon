@@ -15,10 +15,18 @@ import com.example.TrabajoFinalCoder.Repositorios.RepositorioProducto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 
 @Service
@@ -34,6 +42,8 @@ public class ServicioFactura {
 
     @Autowired
     RepositorioCliente repositorioCliente;
+
+    private static final HttpClient httpClient = HttpClient.newBuilder().build();
 
 
     // GET ALL
@@ -85,7 +95,7 @@ public class ServicioFactura {
             }
 
             facturaAGuardar.setCliente(cliente.get());
-            facturaAGuardar.setFecha(LocalDate.now());
+            facturaAGuardar.setFecha(this.getCurrentDate());
             Set<Linea> linesParaFactura = new HashSet<>();
             facturaAGuardar.setId_factura(factura.getId_factura());
 
@@ -218,5 +228,26 @@ public class ServicioFactura {
         return ResponseEntity.ok(mensaje);
     }
 
+    private static LocalDate getCurrentDate() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://worldclockapi.com/api/json/utc/now"))
+                    .build();
 
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) { // Verificar si la respuesta es exitosa
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(response.body());
+                String currentDateString = jsonNode.get("currentDateTime").asText();
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(currentDateString);
+                return zonedDateTime.toLocalDate();
+            } else {
+                System.err.println("Error al obtener la fecha del servidor: " + response.statusCode());
+                return LocalDate.now();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return LocalDate.now();
+        }
+    }
 }
